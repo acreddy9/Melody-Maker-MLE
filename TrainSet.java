@@ -40,7 +40,8 @@ public class TrainSet {
                         int note = key % 12;
                         String noteName = NOTE_NAMES[note];
                         int velocity = sm.getData2();
-                        if (octave > 0) {
+                        // only middle C and higher (octave > 0 gets the base clef)
+                        if (octave > 4) {
                           //System.out.print(key);
                           noteList = noteList + key+",";
                           trainingSet.add(key);
@@ -79,7 +80,6 @@ public class TrainSet {
         noteList = noteList.substring(0,noteList.length()-1);
         System.out.print(noteList);
         System.out.println("}");
-        System.out.println(trainingSet.size()); // 69 = 42 (treble clef notes) + 27 (base clef notes)
         
         
         // count occurrences and calculate probability of each note in training set
