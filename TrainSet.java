@@ -10,16 +10,32 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class TrainSet {
-	
+    
     public static final int NOTE_ON = 0x90;
     public static final int NOTE_OFF = 0x80;
     public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
     public static String noteList = "";
     public static ArrayList<Integer> trainingSet = new ArrayList<Integer>();
 
+    public static ArrayList<String> listFilesForFolder(final File folder) {
+      ArrayList<String> names = new ArrayList<String>();
+      for (final File fileEntry : folder.listFiles()) {
+          if (fileEntry.isDirectory()) {
+              listFilesForFolder(fileEntry);
+          } else {
+              names.add(fileEntry.getName());
+          }
+      }
+      return names;
+  }
     public static void main(String[] args) throws Exception {
-        Sequence sequence = MidiSystem.getSequence(new File("twinkle_twinkle.mid"));
-         PrintWriter p = new PrintWriter("train.txt");
+      final File folder = new File("trainsongs");
+      PrintWriter p = new PrintWriter("train.txt");
+      ArrayList<String> names = listFilesForFolder(folder);
+      
+      for(String fileName:names) {
+        Sequence sequence = MidiSystem.getSequence(new File("trainsongs"+File.separator+fileName));
+        
         for (Track track :  sequence.getTracks()) {
       
             //System.out.println("Track " + trackNumber + ": size = " + track.size());
@@ -42,6 +58,7 @@ public class TrainSet {
                         int velocity = sm.getData2();
                         // only middle C and higher (octave > 0 gets the base clef)
                         if (octave > 4) {
+                          
                           //System.out.print(key);
                           noteList = noteList + key+",";
                           trainingSet.add(key);
@@ -77,11 +94,14 @@ public class TrainSet {
 
            // System.out.println();
         }
-        noteList = noteList.substring(0,noteList.length()-1);
-         p.print(noteList);
-        p.close();
         
+         
+        if (names.indexOf(fileName) == names.size()-1) {
+          noteList = noteList.substring(0,noteList.length()-1);
+        }
+        p.print(noteList);
         
-       
+      }
+      p.close();
     }
 }
