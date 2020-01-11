@@ -127,7 +127,7 @@ public class MLE {
 		
 	}
 	
-	String generatedNoteList = generatedNotes.toString();
+	String generatedNoteList = generatedNotes.toString().replaceAll(" ","");
 	generatedNoteList = generatedNoteList.substring(1, generatedNoteList.length()-1);
     PrintWriter p = new PrintWriter("song.txt");
     p.write(generatedNoteList);
