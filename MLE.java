@@ -1,5 +1,7 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -8,10 +10,9 @@ public class MLE {
   
   public static ArrayList<Integer> trainingSet = new ArrayList<Integer>();
   public static final int numNotesToGenerate = 42;
-  public static ArrayList<Integer> generatedNotes = new ArrayList<Integer>();
-  public static String generatedNoteList;
+  public static ArrayList<Integer> generatedNotes = new ArrayList<Integer>();  
   
-  public static void main(String[] args) {
+  public static void main(String[] args) throws FileNotFoundException {
     try {
 	    Scanner scnr = new Scanner(new File("train.txt"));
 	    String noteString = scnr.nextLine();
@@ -126,9 +127,11 @@ public class MLE {
 		
 	}
 	
-	generatedNoteList = generatedNotes.toString();
+	String generatedNoteList = generatedNotes.toString();
 	generatedNoteList = generatedNoteList.substring(1, generatedNoteList.length()-1);
-	System.out.println(generatedNoteList);
+    PrintWriter p = new PrintWriter("song.txt");
+    p.write(generatedNoteList);
+    p.close();
 
   }
 
