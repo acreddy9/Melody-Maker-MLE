@@ -7,15 +7,18 @@ import java.util.Scanner;
 public class MLE {
   
   public static ArrayList<Integer> trainingSet = new ArrayList<Integer>();
+  public static final int numNotesToGenerate = 42;
+  public static ArrayList<Integer> generatedNotes = new ArrayList<Integer>();
+  public static String generatedNoteList;
   
   public static void main(String[] args) {
     try {
-    Scanner scnr = new Scanner(new File("train.txt"));
-    String noteString = scnr.nextLine();
-    String[] notes = noteString.split(",");
-    for(String n: notes) {
-      trainingSet.add(Integer.parseInt(n));
-    }
+	    Scanner scnr = new Scanner(new File("train.txt"));
+	    String noteString = scnr.nextLine();
+	    String[] notes = noteString.split(",");
+	    for(String n: notes) {
+	      trainingSet.add(Integer.parseInt(n));
+	    }
     }
     catch(IOException E) {
       E.printStackTrace();
@@ -68,17 +71,64 @@ public class MLE {
             }
         }
     }
-    
+ 
     
     // print count and probability of each note
-    for (int i = 0; i < count_x.length; i++) {
-        System.out.print("(" + count_x[i] + ", " + phat_x[i] + ")");
-    }
-    System.out.println();
+//    for (int i = 0; i < count_x.length; i++) {
+//        System.out.print("(" + count_x[i] + ", " + phat_x[i] + ")");
+//    }
+//    System.out.println();
     
-    // choose starting note
+    
+    // generate notes based on maximum likelihood estimation
     Random randGen = new Random();
-    int startingNote = randGen.nextInt(13);
+    
+    // determine first note based on unigram probabilities
+    int firstNote = 0;
+    double firstNoteProbability = randGen.nextDouble();
+    double cumulativeProbability = 0.0;
+    for (int i = 0; i < phat_x.length; i++) {
+    	cumulativeProbability += phat_x[i];
+    	if (firstNoteProbability <= cumulativeProbability) {
+    		firstNote = i;
+    		generatedNotes.add(i);
+    		break;
+    	}
+    }
+    
+    // given first note, determine second note based on bigram probabilities
+    int secondNote = 0;
+    double secondNoteProbability = randGen.nextDouble();
+    cumulativeProbability = 0.0;
+	for (int j = 0; j < phat_xy[firstNote].length; j++) {
+		cumulativeProbability += phat_xy[firstNote][j];
+		if (secondNoteProbability <= cumulativeProbability) {
+    		secondNote = j;
+    		generatedNotes.add(j);
+    		break;
+    	}
+	}
+	
+	// given first and second notes, determine rest of notes based on trigram probabilities
+	for (int n = 2; n < numNotesToGenerate; n++) {
+		x = generatedNotes.get(n-2);
+		y = generatedNotes.get(n-1);
+		double nextNoteProbability = randGen.nextDouble();
+	    cumulativeProbability = 0.0;
+		
+		for (int k = 0; k < phat_xyz[x][y].length; k++) {
+			cumulativeProbability += phat_xyz[x][y][k];
+			if (nextNoteProbability <= cumulativeProbability) {
+				generatedNotes.add(k);
+				break;
+			}
+		}
+		
+	}
+	
+	generatedNoteList = generatedNotes.toString();
+	generatedNoteList = generatedNoteList.substring(1, generatedNoteList.length()-1);
+	System.out.println(generatedNoteList);
 
   }
 
