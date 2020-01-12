@@ -14,12 +14,12 @@ public class MLE {
   
   public static void main(String[] args) throws FileNotFoundException {
     try {
-	    Scanner scnr = new Scanner(new File("train.txt"));
-	    String noteString = scnr.nextLine();
-	    String[] notes = noteString.split(",");
-	    for(String n: notes) {
-	      trainingSet.add(Integer.parseInt(n));
-	    }
+        Scanner scnr = new Scanner(new File("train.txt"));
+        String noteString = scnr.nextLine();
+        String[] notes = noteString.split(",");
+        for(String n: notes) {
+          trainingSet.add(Integer.parseInt(n));
+        }
     }
     catch(IOException E) {
       E.printStackTrace();
@@ -28,26 +28,26 @@ public class MLE {
     
     // count occurrences and calculate probability of each note in training set
     int x,y,z;
-    int[] count_x = new int[88];
-    int[][] count_xy = new int[88][88];
-    int[][][] count_xyz = new int[88][88][88];
-    double[] phat_x = new double[88];
-    double[][] phat_xy = new double[88][88];
-    double[][][] phat_xyz = new double[88][88][88];
+    int[] count_x = new int[12];
+    int[][] count_xy = new int[12][12];
+    int[][][] count_xyz = new int[12][12][12];
+    double[] phat_x = new double[12];
+    double[][] phat_xy = new double[12][12];
+    double[][][] phat_xyz = new double[12][12][12];
     for (int i = 0; i < trainingSet.size(); i++) {
         // increment count of note x
         x = trainingSet.get(i);
-        count_x[x - 21]++;
+        count_x[x -60]++;
         
         // if there is a successive note y, increment count of sequence xy
         if (i < trainingSet.size()-1) {
             y = trainingSet.get(i+1);
-            count_xy[x - 21][y - 21]++;
+            count_xy[x - 60][y - 60]++;
             
             // if there is a second successive note z, increment count of sequence xyz
             if (i < trainingSet.size()-2) {
                 z = trainingSet.get(i+2);
-                count_xyz[x - 21][y - 21][z - 21]++;
+                count_xyz[x - 60][y - 60][z - 60]++;
             }
         }
     }
@@ -89,44 +89,44 @@ public class MLE {
     double firstNoteProbability = randGen.nextDouble();
     double cumulativeProbability = 0.0;
     for (int i = 0; i < phat_x.length; i++) {
-    	cumulativeProbability += phat_x[i];
-    	if (firstNoteProbability <= cumulativeProbability) {
-    		firstNote = i+21;
-    		generatedNotes.add(firstNote);
-    		break;
-    	}
+        cumulativeProbability += phat_x[i];
+        if (firstNoteProbability <= cumulativeProbability) {
+            firstNote = i+60;
+            generatedNotes.add(firstNote);
+            break;
+        }
     }
     
     // given first note, determine second note based on bigram probabilities
     double secondNoteProbability = randGen.nextDouble();
     cumulativeProbability = 0.0;
-	for (int j = 0; j < phat_xy[firstNote].length; j++) {
-		cumulativeProbability += phat_xy[firstNote][j];
-		if (secondNoteProbability <= cumulativeProbability) {
-    		generatedNotes.add(j+21);
-    		break;
-    	}
-	}
-	
-	// given first and second notes, determine rest of notes based on trigram probabilities
-	for (int n = 2; n < numNotesToGenerate; n++) {
-		x = generatedNotes.get(n-2);
-		y = generatedNotes.get(n-1);
-		double nextNoteProbability = randGen.nextDouble();
-	    cumulativeProbability = 0.0;
-		
-		for (int k = 0; k < phat_xyz[x][y].length; k++) {
-			cumulativeProbability += phat_xyz[x][y][k];
-			if (nextNoteProbability <= cumulativeProbability) {
-				generatedNotes.add(k+21);
-				break;
-			}
-		}
-		
-	}
-	
-	String generatedNoteList = generatedNotes.toString().replaceAll(" ","");
-	generatedNoteList = generatedNoteList.substring(1, generatedNoteList.length()-1);
+    for (int j = 0; j < phat_xy[firstNote-60].length; j++) {
+        cumulativeProbability += phat_xy[firstNote-60][j];
+        if (secondNoteProbability <= cumulativeProbability) {
+            generatedNotes.add(j+60);
+            break;
+        }
+    }
+    
+    // given first and second notes, determine rest of notes based on trigram probabilities
+    for (int n = 2; n < numNotesToGenerate; n++) {
+        x = generatedNotes.get(n-2);
+        y = generatedNotes.get(n-1);
+        double nextNoteProbability = randGen.nextDouble();
+        cumulativeProbability = 0.0;
+        
+        for (int k = 0; k < phat_xyz[x-60][y-60].length; k++) {
+            cumulativeProbability += phat_xyz[x-60][y-60][k];
+            if (nextNoteProbability <= cumulativeProbability) {
+                generatedNotes.add(k+60);
+                break;
+            }
+        }
+        
+    }
+    
+    String generatedNoteList = generatedNotes.toString().replaceAll(" ","");
+    generatedNoteList = generatedNoteList.substring(1, generatedNoteList.length()-1);
     PrintWriter p = new PrintWriter("song.txt");
     p.write(generatedNoteList);
     p.close();
