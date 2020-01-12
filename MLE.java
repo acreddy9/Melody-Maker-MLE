@@ -91,21 +91,19 @@ public class MLE {
     for (int i = 0; i < phat_x.length; i++) {
     	cumulativeProbability += phat_x[i];
     	if (firstNoteProbability <= cumulativeProbability) {
-    		firstNote = i;
-    		generatedNotes.add(i);
+    		firstNote = i+21;
+    		generatedNotes.add(firstNote);
     		break;
     	}
     }
     
     // given first note, determine second note based on bigram probabilities
-    int secondNote = 0;
     double secondNoteProbability = randGen.nextDouble();
     cumulativeProbability = 0.0;
 	for (int j = 0; j < phat_xy[firstNote].length; j++) {
 		cumulativeProbability += phat_xy[firstNote][j];
 		if (secondNoteProbability <= cumulativeProbability) {
-    		secondNote = j;
-    		generatedNotes.add(j);
+    		generatedNotes.add(j+21);
     		break;
     	}
 	}
@@ -120,7 +118,7 @@ public class MLE {
 		for (int k = 0; k < phat_xyz[x][y].length; k++) {
 			cumulativeProbability += phat_xyz[x][y][k];
 			if (nextNoteProbability <= cumulativeProbability) {
-				generatedNotes.add(k);
+				generatedNotes.add(k+21);
 				break;
 			}
 		}
