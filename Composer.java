@@ -14,6 +14,7 @@ public class Composer {
 		setTempo(96,4); // 96 quarter notes per minute
 		setDynamicLevel(64); // mezzo forte
 		
+		// TODO: rhythm? repeated or varies throughout song?
 		// TODO: volume?
 		// TODO: chords, chord progression?
 		// TODO: changing dynamic levels?
