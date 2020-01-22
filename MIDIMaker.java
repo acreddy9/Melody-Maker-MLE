@@ -11,8 +11,14 @@ public class MIDIMaker
     {
       int timeStamp = 1;
       Scanner scnr = new Scanner(new File("song.txt"));
+      Scanner velscnr = new Scanner(new File("songVels.txt"));
+      Scanner lenscnr = new Scanner(new File("songLens.txt"));
       String noteString = scnr.nextLine();
+      String velString = velscnr.nextLine();
+      String lenString = lenscnr.nextLine();
       String[] notes = noteString.split(",");
+      String[] vels = velString.split(",");
+      String[] lens = lenString.split(",");
       
 //****  Create a new MIDI sequence with 24 ticks per beat  ****
         Sequence s = new Sequence(javax.sound.midi.Sequence.PPQ,24);
@@ -63,15 +69,16 @@ public class MIDIMaker
        
         for(int i = 0; i < notes.length; i++) {
           mm = new ShortMessage();
-          mm.setMessage(0x90,Integer.parseInt(notes[i]),0x60);
-          me = new MidiEvent(mm,(long)timeStamp);
+         int noteTimer = 0;
+          mm.setMessage(0x90,Integer.parseInt(notes[i]),Integer.parseInt(vels[i]));
+          me = new MidiEvent(mm,(long)(timeStamp+noteTimer));
           t.add(me);
-          timeStamp += 80;
+          noteTimer += Integer.parseInt(lens[i]);
           mm = new ShortMessage();
-          mm.setMessage(0x80,Integer.parseInt(notes[i]),0x40);
-          me = new MidiEvent(mm,(long)timeStamp);
+          mm.setMessage(0x80,Integer.parseInt(notes[i]),Integer.parseInt(vels[i]));
+          me = new MidiEvent(mm,(long)timeStamp+noteTimer);
           t.add(me);
-          timeStamp += 80;
+          timeStamp += 120;
         }
 
 //****  set end of track (meta event) 19 ticks later  ****
