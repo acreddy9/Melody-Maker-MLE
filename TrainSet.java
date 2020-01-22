@@ -16,6 +16,12 @@ public class TrainSet {
     public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
     public static String noteList = "";
     public static ArrayList<Integer> trainingSet = new ArrayList<Integer>();
+    
+    public static String velList = "";
+    public static ArrayList<Integer> VTrainingSet = new ArrayList<Integer>();
+    public static ArrayList<int[]> onTicks = new ArrayList<int[]>();
+    public static ArrayList<int[]> offTicks = new ArrayList<int[]>();
+    public static String lengthList = "";
 
     public static ArrayList<String> listFilesForFolder(final File folder) {
       ArrayList<String> names = new ArrayList<String>();
@@ -30,7 +36,10 @@ public class TrainSet {
   }
     public static void main(String[] args) throws Exception {
       final File folder = new File("trainsongs");
+        
       PrintWriter p = new PrintWriter("train.txt");
+      PrintWriter v = new PrintWriter("veltrain.txt");
+      PrintWriter l = new PrintWriter("lentrain.txt");
       ArrayList<String> names = listFilesForFolder(folder);
       
       for(String fileName:names) {
@@ -48,7 +57,10 @@ public class TrainSet {
                 if (message instanceof ShortMessage) {
                     ShortMessage sm = (ShortMessage) message;
                     //System.out.print("Channel: " + sm.getChannel() + " ");
-                    if (sm.getCommand() == NOTE_ON) {
+                    
+                    
+                   if (sm.getCommand() == NOTE_ON && (sm.getData2() != 0)) {
+                       
                         int key = sm.getData1();
                        
                         // Took off -1, check later if this should have been there
@@ -61,7 +73,10 @@ public class TrainSet {
                           
                           //System.out.print(key);
                           noteList = noteList + key+",";
+                          velocity = (Math.round(velocity/5));
+                          velList = velList + velocity +",";
                           trainingSet.add(key);
+                          onTicks.add(new int[]{(int) event.getTick(), key});
                         //System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
                         //System.out.println(noteName + octave + " key=" + key + " velocity: " + velocity);
                           
@@ -70,19 +85,17 @@ public class TrainSet {
                           //System.out.print(key);
                          // System.out.println();
                         }
-                    } else if (sm.getCommand() == NOTE_OFF) {
+                    } else if (sm.getCommand() == NOTE_OFF || ((sm.getData2() == 0) && (sm.getCommand() == NOTE_ON)))  {
                         int key = sm.getData1();
-                        int octave = (key / 12)-1;
+                        int octave = (key / 12);
                         int note = key % 12;
                         String noteName = NOTE_NAMES[note];
                         int velocity = sm.getData2();
-                        if (octave > 0) {
-                        //System.out.println("Note off, " + noteName + octave + " key=" + key + " velocity: " + velocity);
-                        //System.out.println(noteName + octave + " key=" + key + " velocity: " + velocity);
+                        if (octave > 4) {
+                        offTicks.add(new int[]{(int) event.getTick(), key});
                         }
-                        else {
-                         // System.out.println();
-                        }
+                       
+                      
                           
                     } else {
                         //System.out.println("Command:" + sm.getCommand());
@@ -98,10 +111,36 @@ public class TrainSet {
          
         if (names.indexOf(fileName) == names.size()-1) {
           noteList = noteList.substring(0,noteList.length()-1);
+          velList = velList.substring(0,velList.length()-1);
         }
         p.print(noteList);
-        
+        v.print(velList); 
       }
       p.close();
+         v.close();
+      while(!onTicks.isEmpty()) {
+        int[] curr = onTicks.get(0);
+        onTicks.remove(0);
+        for(int i = 0; i < offTicks.size(); i++) {
+          if (offTicks.get(i)[1] == curr[1]) {
+            
+            int noteLength = (offTicks.get(i)[0]-curr[0]);
+            noteLength = Math.round(noteLength/120);
+            int a = noteLength;
+              a =  a == 0 ? 0 : 32 - Integer.numberOfLeadingZeros(a - 1);
+            noteLength = (int)Math.pow(2,a);
+            
+            if (noteLength > 16) {
+              noteLength = 16;
+            }
+            lengthList += noteLength +",";
+            offTicks.remove(i);
+            break;
+          }
+        }
+      }
+      lengthList = lengthList.substring(0,lengthList.length()-1);
+      l.print(lengthList);
+      l.close();
     }
 }
