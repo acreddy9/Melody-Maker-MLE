@@ -95,7 +95,7 @@ public class MIDIMaker {
       mt = new MetaMessage();
       byte[] bet = {}; // empty array
       mt.setMessage(0x2F, bet, 0);
-      me = new MidiEvent(mt, (long) 140);
+      me = new MidiEvent(mt, (long) (timeStamp+1920));
       t.add(me);
 
       // **** write the MIDI sequence to a MIDI file ****
