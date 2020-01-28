@@ -13,7 +13,7 @@ public class MIDIMaker {
       int timeStamp = 1;
 
       // Scanners for each of the MLEs
-      Scanner scnr = new Scanner(new File("song.txt"));
+      Scanner scnr = new Scanner(new File("songPitches.txt"));
       Scanner velscnr = new Scanner(new File("songVels.txt"));
       Scanner lenscnr = new Scanner(new File("songLens.txt"));
 
@@ -108,7 +108,7 @@ public class MIDIMaker {
       lenscnr.close();
       
     } catch (Exception e) {
-      System.out.println("Exception caught " + e.toString());
+      e.printStackTrace();
     }
   }
 }
