@@ -36,8 +36,7 @@ public class Composer {
       // Calls classes in order to generate a train set, run MLE on each aspect of the song and
       // generate a new song
       TrainSet.main(noteArray);
-      midifile.main(noteArray);
-      MLE.main(noteArray);
+      PitchMLE.main(noteArray);
       VelocityMLE.main(noteArray);
       LengthMLE.main(noteArray);
       MIDIMaker.main(noteArray);
@@ -74,7 +73,7 @@ public class Composer {
    * @param length The number of notes to generate
    */
   public static void setSongLength(int length) {
-    MLE.numNotesToGenerate = length;
+    PitchMLE.numPitchesToGenerate = length;
   }
 
   /**
