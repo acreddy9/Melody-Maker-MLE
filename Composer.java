@@ -104,7 +104,7 @@ public class Composer {
   }
 
   /**
-   * Sets intensity at which keys are striked. This equates to volume for basic synthesizers, and
+   * Sets intensity at which keys are struck. This equates to volume for basic synthesizers, and
    * additionally affects timber for sophisticated synthesizers.
    * 
    * @param velocity An intensity level 42 to 80 representing piano to forte
