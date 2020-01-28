@@ -46,7 +46,7 @@ public class TrainSet {
       final File folder = new File("trainsongs");
         
       // Printwriters for each of the separate MLE classes
-      PrintWriter p = new PrintWriter("train.txt");
+      PrintWriter p = new PrintWriter("pitchtrain.txt");
       PrintWriter v = new PrintWriter("veltrain.txt");
       PrintWriter l = new PrintWriter("lentrain.txt");
       ArrayList<String> names = listFilesForFolder(folder);
