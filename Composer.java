@@ -32,6 +32,7 @@ public class Composer {
         notes = input.nextInt();
       }
       String[] noteArray = new String[] {"" + notes};
+      input.close();
 
       // Calls classes in order to generate a train set, run MLE on each aspect of the song and
       // generate a new song
