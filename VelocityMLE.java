@@ -23,7 +23,7 @@ public class VelocityMLE {
   
 	public static void main(String[] args) throws FileNotFoundException {
 		// Use the user's desired song length if provided
-		if (args[0] != null) {
+		if (args[0] != null){
 			numVelocitiesToGenerate = Integer.parseInt(args[0]);
 		}
 		// velocity of the quietest note in training set
