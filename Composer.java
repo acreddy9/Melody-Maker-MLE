@@ -25,25 +25,24 @@ public class Composer {
 
     // Prompts the user to input the number of notes that they want
     try {
-      //System.out.println("How many notes would you like to generate?");
-      //Scanner input = new Scanner(System.in);
-      //int notes = 0;
-      //if (input.hasNextInt()) {
-      //  notes = input.nextInt();
-      //}
-      //String[] noteArray = new String[] {"" + notes};
-      //input.close();
+      System.out.println("How many notes would you like to generate?");
+      Scanner input = new Scanner(System.in);
+      int notes = 0;
+      if (input.hasNextInt()) {
+        notes = input.nextInt();
+      }
+      String[] noteArray = new String[] {"" + notes};
+      input.close();
 
       // Calls classes in order to generate a train set, run MLE on each aspect of the song and
       // generate a new song
-     // TrainSet.main(noteArray);
-     // PitchMLE.main(noteArray);
-      TrainSet.main(new String[] {"42"});
-       PitchMLE.main(new String[] {"42"});
-      //VelocityMLE.main(noteArray);
-      //LengthMLE.main(noteArray);
-      //MIDIMaker.main(noteArray);
-       MIDIMaker.main(new String[] {"42"});
+      TrainSet.main(noteArray);
+     PitchMLE.main(noteArray);
+
+      VelocityMLE.main(noteArray);
+      LengthMLE.main(noteArray);
+      MIDIMaker.main(noteArray);
+
       try {
         // Get the default Sequencer
         Sequencer sequencer = MidiSystem.getSequencer();
