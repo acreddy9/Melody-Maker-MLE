@@ -54,7 +54,12 @@ public class TrainSet {
       // Iterates through each file in the train set 
       for(String fileName:names) {
         Sequence sequence = MidiSystem.getSequence(new File("trainsongs"+File.separator+fileName));
-        
+          
+         // Resets printwriters
+         p = new PrintWriter("pitchtrain.txt");
+         v = new PrintWriter("veltrain.txt");
+         l = new PrintWriter("lentrain.txt");
+          
         // Iterates through the track 
         for (Track track :  sequence.getTracks()) {
             for (int i=0; i < track.size(); i++) { 
@@ -107,11 +112,12 @@ public class TrainSet {
         }
         p.print(noteList);
         v.print(velList); 
+        // Closes file writers
+        p.close();
+        v.close();  
+          
       }
-      
-      // Closes file writers
-      p.close();
-         v.close();
+   
          
          // Calculates note lengths by removing one on timestamp at a time and finding its associated off timestamp and determining the difference
       while(!onTicks.isEmpty()) {
